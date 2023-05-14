@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "rest_framework.authtoken",
     "drf_spectacular",
     "django_filters",
     "djoser",
@@ -169,6 +170,10 @@ REST_FRAMEWORK = {
 }
 # endregion
 
+# region data files
+DATA_FILES_DIR = BASE_DIR / "data/"
+# endregion
+
 # region django-cors-headers
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_METHODS = [
@@ -179,10 +184,6 @@ CORS_ALLOW_METHODS = [
     "POST",
     "PUT",
 ]
-# endregion
-
-# region data files
-DATA_FILES_DIR = BASE_DIR / "data/"
 # endregion
 
 # region data upload

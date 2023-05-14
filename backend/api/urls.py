@@ -1,3 +1,4 @@
+from django.template.defaulttags import url
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
@@ -14,6 +15,6 @@ auth_patterns = [
 ]
 
 urlpatterns = [
-    path("auth/", include(auth_patterns)),
+    path("", include(auth_patterns)),
     path("", include(router.urls)),
 ]
