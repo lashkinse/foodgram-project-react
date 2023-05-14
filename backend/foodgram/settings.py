@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "drf_spectacular",
+    "django_filters",
     "djoser",
     "api",
     "users",
@@ -143,9 +144,9 @@ DJOSER = {
     "LOGIN_FIELD": "email",
     "HIDE_USERS": False,
     "SERIALIZERS": {
-        # "user_create": "users.serializers.UserCreateSerializer",
-        # "user": "users.serializers.UserSerializer",
-        # "current_user": "users.serializers.UserSerializer",
+        "user": "api.serializers.CustomUserSerializer",
+        "current_user": "api.serializers.CustomUserSerializer",
+        "user_create": "api.serializers.CustomUserCreateSerializer",
     },
     "PERMISSIONS": {
         "user": ("rest_framework.permissions.AllowAny",),

@@ -158,7 +158,8 @@
 Полный список запросов и эндпоинтов описан в документации ReDoc, доступна после запуска проекта по адресу:
 
 ```
-http://<server_ip_address>/redoc/
+http://<server_ip_address>/api/docs/
+http://<server_ip_address>/api/docs/swagger.html
 ```
 
 ### Тестирование проекта
