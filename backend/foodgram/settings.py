@@ -179,3 +179,11 @@ CORS_ALLOW_METHODS = [
     "PUT",
 ]
 # endregion
+
+# region data files
+DATA_FILES_DIR = BASE_DIR / "data/"
+# endregion
+
+# region data upload
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240
+# endregion
