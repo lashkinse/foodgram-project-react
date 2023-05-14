@@ -37,9 +37,9 @@ class IngredientAdmin(admin.ModelAdmin):
     empty_value_display = "-пусто-"
 
 
+admin.site.register(Favorite)
+admin.site.register(Follow)
 admin.site.register(Tag)
 admin.site.register(RecipeTag)
 admin.site.register(RecipeIngredient)
-admin.site.register(Follow)
 admin.site.register(ShoppingCard)
-admin.site.register(Favorite)
