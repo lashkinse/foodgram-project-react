@@ -13,11 +13,11 @@ class CustomUserSerializer(UserSerializer):
     class Meta:
         model = User
         fields = (
+            "email",
             "id",
+            "username",
             "first_name",
             "last_name",
-            "email",
-            "username",
             "is_subscribed",
         )
 
@@ -34,11 +34,11 @@ class CustomUserCreateSerializer(UserCreateSerializer):
     class Meta:
         model = User
         fields = (
+            "email",
             "id",
+            "username",
             "first_name",
             "last_name",
-            "email",
-            "username",
             "password",
         )
 
