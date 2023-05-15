@@ -149,7 +149,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
             self.fields.pop("measurement_unit")
 
 
-class RecipeSerializer(serializers.ModelSerializer):
+class RecipeReadSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True)
     author = CustomUserSerializer(many=False, read_only=True)
     ingredients = RecipeIngredientSerializer(
@@ -165,11 +165,45 @@ class RecipeSerializer(serializers.ModelSerializer):
             "tags",
             "author",
             "ingredients",
-            "is_favorited",
-            "is_in_shopping_cart",
             "name",
             "image",
             "text",
+            "cooking_time",
+            "is_favorited",
+            "is_in_shopping_cart",
+        )
+
+    def get_is_favorited(self, recipe):
+        user = self.context["request"].user
+        return (
+            not user.is_anonymous
+            and user.favorites.filter(recipe=recipe).exists()
+        )
+
+    def get_is_in_shopping_cart(self, recipe):
+        user = self.context["request"].user
+        return (
+            not user.is_anonymous
+            and user.shopping_card.filter(recipe=recipe).exists()
+        )
+
+
+class RecipeWriteSerializer(serializers.ModelSerializer):
+    tags = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Tag.objects.all()
+    )
+    ingredients = RecipeIngredientSerializer(many=True)
+    image = Base64ImageField()
+
+    class Meta:
+        model = Recipe
+        fields = (
+            "tags",
+            "ingredients",
+            "author",
+            "name",
+            "text",
+            "image",
             "cooking_time",
         )
         read_only_fields = ("author",)
@@ -202,20 +236,6 @@ class RecipeSerializer(serializers.ModelSerializer):
                     {"amount": "Количество должно быть больше нуля"}
                 )
         return attrs
-
-    def get_is_favorited(self, recipe):
-        user = self.context["request"].user
-        return (
-            not user.is_anonymous
-            and user.favorites.filter(recipe=recipe).exists()
-        )
-
-    def get_is_in_shopping_cart(self, recipe):
-        user = self.context["request"].user
-        return (
-            not user.is_anonymous
-            and user.shopping_card.filter(recipe=recipe).exists()
-        )
 
     def create(self, validated_data):
         tags = validated_data.pop("tags")
@@ -257,7 +277,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         request = self.context.get("request")
         context = {"request": request}
-        return self.__class__(instance, context=context).data
+        return RecipeReadSerializer(instance, context=context).data
 
 
 class FavoriteSerializer(serializers.ModelSerializer):

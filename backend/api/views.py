@@ -17,7 +17,8 @@ from api.serializers import (
     SubscriptionSerializer,
     FavoriteSerializer,
     ShoppingCardSerializer,
-    RecipeSerializer,
+    RecipeWriteSerializer,
+    RecipeReadSerializer,
 )
 from recipes.models import (
     Tag,
@@ -85,7 +86,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthorOrReadOnly]
     filterset_class = RecipeFilter
     filter_backends = (DjangoFilterBackend,)
-    serializer_class = RecipeSerializer
 
     def get_queryset(self):
         user_id = (
@@ -94,6 +94,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
             else None
         )
         return Recipe.objects.annotate_user_data(user_id)
+
+    def get_serializer_class(self):
+        if self.action in ["create", "partial_update"]:
+            return RecipeWriteSerializer
+        return RecipeReadSerializer
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
