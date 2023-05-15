@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.db.models import OuterRef, Exists
 
 from recipes.validators import validate_hex_color
 
@@ -60,6 +61,27 @@ class Ingredient(models.Model):
         )
 
 
+class RecipeQuerySet(models.QuerySet):
+    def filter_by_tags(self, tags):
+        if tags:
+            return self.filter(tags__slug__in=tags).distinct()
+        return self.none()
+
+    def add_user_annotations(self, user_id):
+        return self.annotate(
+            is_favorited=Exists(
+                Favorite.objects.filter(
+                    user_id=user_id, recipe__pk=OuterRef("pk")
+                )
+            ),
+            is_in_shopping_cart=Exists(
+                ShoppingCard.objects.filter(
+                    user_id=user_id, recipe__pk=OuterRef("pk")
+                )
+            ),
+        )
+
+
 class Recipe(models.Model):
     author = models.ForeignKey(
         User,
@@ -78,6 +100,7 @@ class Recipe(models.Model):
         verbose_name="Время приготовления (в минутах)",
         validators=[MinValueValidator(1)],
     )
+    objects = RecipeQuerySet.as_manager()
 
     class Meta:
         verbose_name = "Рецепт"
