@@ -8,19 +8,20 @@ repos:
         files: ^backend/
       - id: trailing-whitespace
         files: ^backend/
-  - repo: https://github.com/psf/black
-    rev: 23.3.0
-    hooks:
-      - id: black
+      - id: check-added-large-files
         files: ^backend/
-        language_version: python3
-        exclude: ^tests/
-        args: [ -S, -t, py37, --line-length, "79" ]
-  - repo: https://github.com/timothycrosley/isort
+  - repo: https://github.com/pre-commit/mirrors-autopep8
+    rev: v2.0.2
+    hooks:
+      - id: autopep8
+        files: ^backend/
+  - repo: https://github.com/pycqa/isort
     rev: 5.12.0
     hooks:
       - id: isort
         files: ^backend/
+        name: isort (python)
+        args: [ --settings-path, backend/.isort.cfg ]
   - repo: https://github.com/PyCQA/flake8
     rev: 4.0.1
     hooks:
