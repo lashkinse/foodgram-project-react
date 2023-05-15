@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
@@ -90,7 +91,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             if self.request.user.is_authenticated
             else None
         )
-        return Recipe.objects.add_user_annotations(user_id)
+        return Recipe.objects.annotate_user_data(user_id)
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -164,3 +165,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
         favorite_recipe = get_object_or_404(Favorite, user=user, recipe=recipe)
         favorite_recipe.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(
+        detail=False, methods=["GET"], permission_classes=[IsAuthenticated]
+    )
+    def download_recipes(self, request):
+        queryset = self.filter_queryset(self.get_queryset())
+        recipe_list = [recipe.name for recipe in queryset]
+        recipe_text = "\n".join(recipe_list)
+        response = HttpResponse(recipe_text, content_type="text/plain")
+        response["Content-Disposition"] = 'attachment; filename="recipes.txt"'
+        return response

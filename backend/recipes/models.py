@@ -67,7 +67,7 @@ class RecipeQuerySet(models.QuerySet):
             return self.filter(tags__slug__in=tags).distinct()
         return self.none()
 
-    def add_user_annotations(self, user_id):
+    def annotate_user_data(self, user_id):
         return self.annotate(
             is_favorited=Exists(
                 Favorite.objects.filter(

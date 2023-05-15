@@ -169,13 +169,13 @@ http://<server_ip_address>/api/docs/swagger.html
 ```
 http://<server_ip_address>/admin/
 admin
-s8YRcD
+8@sRcYD!
 ```
 
 Вход под обычным пользователем.
 
 ```
-http://<server_ip_address>/admin/
 user
-8sRcYD
+user@ya.ru
+8@sRcYD!
 ```
