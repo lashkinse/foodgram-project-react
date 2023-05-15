@@ -9,7 +9,7 @@ from rest_framework.response import Response
 
 from api.filters import IngredientFilter, RecipeFilter
 from api.mixins import ListRetrieveModelMixin
-from api.permissions import IsAuthenticated, IsReadOnly, IsAuthor
+from api.permissions import IsAuthenticated, IsAuthorOrReadOnly
 from api.serializers import (
     TagSerializer,
     IngredientSerializer,
@@ -17,6 +17,7 @@ from api.serializers import (
     SubscriptionSerializer,
     FavoriteSerializer,
     ShoppingCardSerializer,
+    RecipeSerializer,
 )
 from recipes.models import (
     Tag,
@@ -81,9 +82,10 @@ class IngredientViewSet(ListRetrieveModelMixin):
 class RecipeViewSet(viewsets.ModelViewSet):
     http_method_names = ["get", "post", "patch", "delete"]
     queryset = Recipe.objects.all()
-    permission_classes = [IsAuthor, IsReadOnly]
+    permission_classes = [IsAuthorOrReadOnly]
     filterset_class = RecipeFilter
     filter_backends = (DjangoFilterBackend,)
+    serializer_class = RecipeSerializer
 
     def get_queryset(self):
         user_id = (
