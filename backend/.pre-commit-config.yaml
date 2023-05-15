@@ -21,7 +21,7 @@ repos:
       - id: isort
         files: ^backend/
         name: isort (python)
-        args: [ --settings-path, backend/.isort.cfg ]
+        args: [ --settings-path, backend/setup.cfg ]
   - repo: https://github.com/PyCQA/flake8
     rev: 4.0.1
     hooks:
