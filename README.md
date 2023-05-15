@@ -175,7 +175,6 @@ admin
 Вход под обычным пользователем.
 
 ```
-user@ya.ru
-user2@ya.ru
+user@ya.ru или user2@ya.ru
 8@sRcYD!
 ```
