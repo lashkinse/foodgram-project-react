@@ -6,7 +6,7 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from api.filters import IngredientFilter
+from api.filters import IngredientFilter, RecipeFilter
 from api.mixins import ListRetrieveModelMixin
 from api.permissions import IsAuthenticated, IsReadOnly, IsAuthor
 from api.serializers import (
@@ -77,10 +77,6 @@ class IngredientViewSet(ListRetrieveModelMixin):
     filter_backends = (DjangoFilterBackend,)
 
 
-class RecipeFilter:
-    pass
-
-
 class RecipeViewSet(viewsets.ModelViewSet):
     http_method_names = ["get", "post", "patch", "delete"]
     queryset = Recipe.objects.all()
@@ -89,15 +85,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
 
     def get_queryset(self):
-        if self.request.user.is_authenticated:
-            return Recipe.objects.add_user_annotations(self.request.user.id)
-        return Recipe.objects.add_user_annotations(
-            Value(None, output_field=BooleanField())
+        user_id = (
+            self.request.user.id
+            if self.request.user.is_authenticated
+            else None
         )
+        return Recipe.objects.add_user_annotations(user_id)
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
-
 
     @action(
         detail=True,
