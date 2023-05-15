@@ -129,30 +129,42 @@ class SubscriptionSerializer(serializers.ModelSerializer):
         return all_recipes.count()
 
 
-class RecipeIngredientSerializer(serializers.ModelSerializer):
-    id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
+# class RecipeIngredientSerializer(serializers.ModelSerializer):
+#     id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
+#     name = serializers.ReadOnlyField(source="ingredient.name")
+#     measurement_unit = serializers.ReadOnlyField(
+#         source="ingredient.measurement_unit"
+#     )
+#     amount = serializers.IntegerField()
+#
+#     class Meta:
+#         model = RecipeIngredient
+#         fields = ("id", "name", "measurement_unit", "amount")
+#
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         request = self.context.get("request")
+#         if request and request.method in ["POST", "DELETE"]:
+#             self.fields.pop("name")
+#             self.fields.pop("measurement_unit")
+
+
+class RecipeIngredientReadSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField(source="ingredient.id")
     name = serializers.ReadOnlyField(source="ingredient.name")
     measurement_unit = serializers.ReadOnlyField(
         source="ingredient.measurement_unit"
     )
-    amount = serializers.IntegerField()
 
     class Meta:
         model = RecipeIngredient
         fields = ("id", "name", "measurement_unit", "amount")
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        request = self.context.get("request")
-        if request and request.method in ["POST", "DELETE"]:
-            self.fields.pop("name")
-            self.fields.pop("measurement_unit")
-
 
 class RecipeReadSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True)
     author = CustomUserSerializer(many=False, read_only=True)
-    ingredients = RecipeIngredientSerializer(
+    ingredients = RecipeIngredientReadSerializer(
         many=True, read_only=True, source="recipe_ingredients"
     )
     is_favorited = serializers.SerializerMethodField()
@@ -188,11 +200,20 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         )
 
 
+class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
+    id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
+    amount = serializers.IntegerField()
+
+    class Meta:
+        model = RecipeIngredient
+        fields = ("id", "amount")
+
+
 class RecipeWriteSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Tag.objects.all()
     )
-    ingredients = RecipeIngredientSerializer(many=True)
+    ingredients = RecipeIngredientWriteSerializer(many=True)
     image = Base64ImageField()
 
     class Meta:

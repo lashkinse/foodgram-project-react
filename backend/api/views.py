@@ -1,4 +1,7 @@
+import io
+
 from django.contrib.auth import get_user_model
+from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -27,6 +30,7 @@ from recipes.models import (
     Favorite,
     ShoppingCard,
     Recipe,
+    RecipeIngredient,
 )
 
 User = get_user_model()
@@ -47,21 +51,40 @@ class CustomUserViewSet(UserViewSet):
         return Response(serializer.data)
 
     @action(
+        detail=False, methods=(["GET"]), permission_classes=[IsAuthenticated]
+    )
+    def subscriptions(self, request):
+        user = request.user
+        subscriptions = Follow.objects.filter(user=user)
+        pages = self.paginate_queryset(subscriptions)
+        serializer = SubscriptionSerializer(
+            pages, many=True, context={"request": request}
+        )
+        return self.get_paginated_response(serializer.data)
+    
+    @action(
         detail=True, methods=["POST"], permission_classes=[IsAuthenticated]
     )
-    def subscribe(self, request, pk=None):
-        author = get_object_or_404(User, pk=pk)
-        serializer = SubscriptionSerializer(
-            data=request.data, context={"request": request, "user": author}
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save(user=request.user, author=author)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    def subscribe(self, request, **kwargs):
+        user = get_object_or_404(User, pk=kwargs.get("id"))
+        context = {"request": self.request, "user": user}
+        serializer = SubscriptionSerializer(data=request.data, context=context)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save(user=request.user, author=user)
+            return Response(
+                data=serializer.data, status=status.HTTP_201_CREATED
+            )
 
     @subscribe.mapping.delete
-    def unsubscribe(self, request, pk=None):
-        author = get_object_or_404(User, pk=pk)
-        follow = get_object_or_404(Follow, user=request.user, author=author)
+    def unsubscribe(self, request, **kwargs):
+        user = request.user
+        author = get_object_or_404(User, pk=kwargs.get("id"))
+        if not Follow.objects.filter(user=user, author=author).exists():
+            return Response(
+                {"error": "Вы не подписаны на данного пользователя"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        follow = get_object_or_404(Follow, user=user, author=author)
         follow.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -119,12 +142,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 data=serializer.data, status=status.HTTP_201_CREATED
             )
 
-    @action(
-        detail=True,
-        methods=["DELETE"],
-        permission_classes=[IsAuthenticated],
-        url_path="shopping_cart",
-    )
+    @add_to_shopping_cart.mapping.delete
     def remove_from_shopping_cart(self, request, **kwargs):
         recipe = self.get_object()
         user = request.user
@@ -155,12 +173,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 data=serializer.data, status=status.HTTP_201_CREATED
             )
 
-    @action(
-        detail=True,
-        methods=["DELETE"],
-        permission_classes=[IsAuthenticated],
-        url_path="favorite",
-    )
+    @add_to_favorite.mapping.delete
     def remove_from_favorite(self, request, **kwargs):
         recipe = self.get_object()
         user = request.user
@@ -176,10 +189,20 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(
         detail=False, methods=["GET"], permission_classes=[IsAuthenticated]
     )
-    def download_recipes(self, request):
-        queryset = self.filter_queryset(self.get_queryset())
-        recipe_list = [recipe.name for recipe in queryset]
-        recipe_text = "\n".join(recipe_list)
-        response = HttpResponse(recipe_text, content_type="text/plain")
+    def download_shopping_cart(self, request):
+        ingredients = (
+            RecipeIngredient.objects.filter(
+                recipe__shopping_card__user=request.user
+            )
+            .prefetch_related("recipe__shopping_card", "user", "ingredient")
+            .values_list("ingredient__name", "ingredient__measurement_unit")
+            .annotate(total_amount=Sum("amount"))
+        )
+        output = io.StringIO()
+        output.write("Список покупок:\n")
+        for i, (name, unit, amount) in enumerate(ingredients, start=1):
+            output.write(f"{i}. {name} - {amount} {unit}\n")
+        response = HttpResponse(content_type="text/plain")
         response["Content-Disposition"] = 'attachment; filename="recipes.txt"'
+        response.write(output.getvalue())
         return response
