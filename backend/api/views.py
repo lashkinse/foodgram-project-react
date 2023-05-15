@@ -13,25 +13,12 @@ from rest_framework.response import Response
 from api.filters import IngredientFilter, RecipeFilter
 from api.mixins import ListRetrieveModelMixin
 from api.permissions import IsAuthenticated, IsAuthorOrReadOnly
-from api.serializers import (
-    TagSerializer,
-    IngredientSerializer,
-    CustomUserSerializer,
-    SubscriptionSerializer,
-    FavoriteSerializer,
-    ShoppingCardSerializer,
-    RecipeWriteSerializer,
-    RecipeReadSerializer,
-)
-from recipes.models import (
-    Tag,
-    Ingredient,
-    Follow,
-    Favorite,
-    ShoppingCard,
-    Recipe,
-    RecipeIngredient,
-)
+from api.serializers import (CustomUserSerializer, FavoriteSerializer,
+                             IngredientSerializer, RecipeReadSerializer,
+                             RecipeWriteSerializer, ShoppingCardSerializer,
+                             SubscriptionSerializer, TagSerializer)
+from recipes.models import (Favorite, Follow, Ingredient, Recipe,
+                            RecipeIngredient, ShoppingCard, Tag)
 
 User = get_user_model()
 
@@ -61,7 +48,7 @@ class CustomUserViewSet(UserViewSet):
             pages, many=True, context={"request": request}
         )
         return self.get_paginated_response(serializer.data)
-    
+
     @action(
         detail=True, methods=["POST"], permission_classes=[IsAuthenticated]
     )

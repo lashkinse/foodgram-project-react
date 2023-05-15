@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.db.models import OuterRef, Exists
+from django.db.models import Exists, OuterRef
 
 from recipes.validators import validate_hex_color
 

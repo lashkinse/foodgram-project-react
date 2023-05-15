@@ -59,7 +59,8 @@ class Migration(migrations.Migration):
                 (
                     "date_joined",
                     models.DateTimeField(
-                        default=django.utils.timezone.now, verbose_name="date joined"
+                        default=django.utils.timezone.now,
+                        verbose_name="date joined",
                     ),
                 ),
                 (
@@ -88,9 +89,18 @@ class Migration(migrations.Migration):
                         verbose_name="Имя пользователя",
                     ),
                 ),
-                ("first_name", models.CharField(max_length=150, verbose_name="Имя")),
-                ("last_name", models.CharField(max_length=150, verbose_name="Фамилия")),
-                ("password", models.CharField(max_length=150, verbose_name="Пароль")),
+                (
+                    "first_name",
+                    models.CharField(max_length=150, verbose_name="Имя"),
+                ),
+                (
+                    "last_name",
+                    models.CharField(max_length=150, verbose_name="Фамилия"),
+                ),
+                (
+                    "password",
+                    models.CharField(max_length=150, verbose_name="Пароль"),
+                ),
                 (
                     "groups",
                     models.ManyToManyField(

@@ -1,32 +1,37 @@
-# https://pre-commit.com/
-# Установка:
-#   заходим в каталог с проектом и выполняем `pip install pre-commit`
-#   рядом с setup.cfg создаем файл `.pre-commit-config.yaml` с содержимым этого файла
-#   для импортов необходимо прописать known_first_party в файле .isort.cfg
-# Запуск полного сканирования:
-#   из корня проекта запускаем команду `pre-commit run --all-files`
 repos:
+  - repo: https://github.com/pre-commit/mirrors-autopep8
+    rev: v1.5.7
+    hooks:
+      - id: autopep8
+        files: ^backend/
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:
       - id: check-yaml
+        files: ^backend/
       - id: end-of-file-fixer
+        files: ^backend/
       - id: trailing-whitespace
+        files: ^backend/
   - repo: https://github.com/psf/black
     rev: 22.12.0
     hooks:
       - id: black
+        files: ^backend/
         language_version: python3
         exclude: ^tests/
-        args: [-S, -t, py37, --line-length, "79"]
+        args: [ -S, -t, py37, --line-length, "79" ]
   - repo: https://github.com/timothycrosley/isort
     rev: 5.12.0
     hooks:
-    - id: isort
+      - id: isort
+        files: ^backend/
   - repo: https://github.com/PyCQA/flake8
     rev: 4.0.1
     hooks:
       - id: flake8
+        files: ^backend/
         additional_dependencies:
           - pyproject-flake8
           - flake8-builtins
@@ -39,13 +44,14 @@ repos:
           - flake8-printf-formatting
           - flake8-pytest-style
           - flake8-variables-names
-        args: ["--config=setup.cfg"]
+        args: [ "--config=backend/setup.cfg" ]
   - repo: local
     hooks:
       - id: migrations
+        files: ^backend/
         name: "Checking migrations"
-        entry: python api_yamdb/manage.py
+        entry: python backend/manage.py
         language: system
-        args: [makemigrations, --dry-run, --check]
+        args: [ makemigrations, --dry-run, --check ]
         pass_filenames: false
         require_serial: true

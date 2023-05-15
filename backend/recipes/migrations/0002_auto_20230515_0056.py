@@ -12,11 +12,17 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='recipeingredient',
-            options={'verbose_name': 'Ингредиент в рецепте', 'verbose_name_plural': 'Ингредиенты в рецепте'},
+            options={
+                'verbose_name': 'Ингредиент в рецепте',
+                'verbose_name_plural': 'Ингредиенты в рецепте',
+            },
         ),
         migrations.AlterModelOptions(
             name='recipetag',
-            options={'verbose_name': 'Тег в рецепте', 'verbose_name_plural': 'Теги в рецепте'},
+            options={
+                'verbose_name': 'Тег в рецепте',
+                'verbose_name_plural': 'Теги в рецепте',
+            },
         ),
         migrations.RemoveConstraint(
             model_name='favorite',
@@ -24,6 +30,8 @@ class Migration(migrations.Migration):
         ),
         migrations.AddConstraint(
             model_name='favorite',
-            constraint=models.UniqueConstraint(fields=('user', 'recipe'), name='unique_user_favorite_recipe'),
+            constraint=models.UniqueConstraint(
+                fields=('user', 'recipe'), name='unique_user_favorite_recipe'
+            ),
         ),
     ]

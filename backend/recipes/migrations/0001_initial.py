@@ -63,10 +63,15 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("name", models.CharField(max_length=200, verbose_name="Название")),
+                (
+                    "name",
+                    models.CharField(max_length=200, verbose_name="Название"),
+                ),
                 (
                     "measurement_unit",
-                    models.CharField(max_length=200, verbose_name="Единица измерения"),
+                    models.CharField(
+                        max_length=200, verbose_name="Единица измерения"
+                    ),
                 ),
             ],
             options={
@@ -86,13 +91,21 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("name", models.CharField(max_length=200, verbose_name="Название")),
-                ("image", models.ImageField(upload_to="", verbose_name="Картинка")),
+                (
+                    "name",
+                    models.CharField(max_length=200, verbose_name="Название"),
+                ),
+                (
+                    "image",
+                    models.ImageField(upload_to="", verbose_name="Картинка"),
+                ),
                 ("text", models.TextField(verbose_name="Описание")),
                 (
                     "cooking_time",
                     models.PositiveIntegerField(
-                        validators=[django.core.validators.MinValueValidator(1)],
+                        validators=[
+                            django.core.validators.MinValueValidator(1)
+                        ],
                         verbose_name="Время приготовления (в минутах)",
                     ),
                 ),
@@ -117,7 +130,9 @@ class Migration(migrations.Migration):
                 (
                     "amount",
                     models.PositiveSmallIntegerField(
-                        validators=[django.core.validators.MinValueValidator(1)],
+                        validators=[
+                            django.core.validators.MinValueValidator(1)
+                        ],
                         verbose_name="Количество",
                     ),
                 ),
@@ -170,7 +185,9 @@ class Migration(migrations.Migration):
                 (
                     "name",
                     models.CharField(
-                        max_length=200, unique=True, verbose_name="Название тега"
+                        max_length=200,
+                        unique=True,
+                        verbose_name="Название тега",
                     ),
                 ),
                 (
@@ -184,7 +201,9 @@ class Migration(migrations.Migration):
                 (
                     "slug",
                     models.SlugField(
-                        max_length=200, unique=True, verbose_name="Уникальный слаг"
+                        max_length=200,
+                        unique=True,
+                        verbose_name="Уникальный слаг",
                     ),
                 ),
             ],
@@ -272,12 +291,15 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="recipe",
             name="tags",
-            field=models.ManyToManyField(through="recipes.RecipeTag", to="recipes.tag"),
+            field=models.ManyToManyField(
+                through="recipes.RecipeTag", to="recipes.tag"
+            ),
         ),
         migrations.AddConstraint(
             model_name="ingredient",
             constraint=models.UniqueConstraint(
-                fields=("name", "measurement_unit"), name="unique_name_measurement_unit"
+                fields=("name", "measurement_unit"),
+                name="unique_name_measurement_unit",
             ),
         ),
         migrations.AddField(
@@ -333,7 +355,8 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name="recipeingredient",
             constraint=models.UniqueConstraint(
-                fields=("recipe", "ingredient"), name="unique_recipe_ingredient"
+                fields=("recipe", "ingredient"),
+                name="unique_recipe_ingredient",
             ),
         ),
         migrations.AddConstraint(
