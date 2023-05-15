@@ -162,19 +162,3 @@ http://<server_ip_address>/api/docs/
 http://<server_ip_address>/api/docs/swagger.html
 ```
 
-### Тестирование проекта
-
-Вход в административное меню:
-
-```
-http://<server_ip_address>/admin/
-admin
-8@sRcYD!
-```
-
-Вход под обычным пользователем.
-
-```
-user@ya.ru или user2@ya.ru
-8@sRcYD!
-```
