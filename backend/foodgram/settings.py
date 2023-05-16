@@ -131,14 +131,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-# region users
-EMAIL_MAX_LEN = 254
-USERNAME_MAX_LEN = 150
-FIRSTNAME_MAX_LEN = 150
-LASTNAME_MAX_LEN = 150
-PASSWORD_MAX_LEN = 150
-# endregion
-
 # region djoser
 AUTH_USER_MODEL = "users.User"
 DJOSER = {

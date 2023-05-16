@@ -1,15 +1,14 @@
-from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from users.validators import validate_username_format, validate_username_length
+from users.validators import validate_username_format
 
 
 class User(AbstractUser):
     email = models.EmailField(
         verbose_name="Электронная почта",
         unique=True,
-        max_length=settings.EMAIL_MAX_LEN,
+        max_length=254,
         error_messages={
             "unique": "Пользователь с таким адресом электронной почты "
             "уже существует"
@@ -18,21 +17,15 @@ class User(AbstractUser):
     username = models.CharField(
         verbose_name="Имя пользователя",
         unique=True,
-        max_length=settings.USERNAME_MAX_LEN,
-        validators=[validate_username_length, validate_username_format],
+        max_length=150,
+        validators=[validate_username_format],
         error_messages={
             "unique": "Пользователь с таким именем уже существует"
         },
     )
-    first_name = models.CharField(
-        verbose_name="Имя", max_length=settings.FIRSTNAME_MAX_LEN
-    )
-    last_name = models.CharField(
-        verbose_name="Фамилия", max_length=settings.LASTNAME_MAX_LEN
-    )
-    password = models.CharField(
-        verbose_name="Пароль", max_length=settings.PASSWORD_MAX_LEN
-    )
+    first_name = models.CharField(verbose_name="Имя", max_length=150)
+    last_name = models.CharField(verbose_name="Фамилия", max_length=150)
+    password = models.CharField(verbose_name="Пароль", max_length=150)
 
     class Meta:
         verbose_name = "Пользователь"

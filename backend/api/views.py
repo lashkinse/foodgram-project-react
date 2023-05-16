@@ -1,5 +1,3 @@
-import io
-
 from django.contrib.auth import get_user_model
 from django.db.models import Sum
 from django.http import HttpResponse
@@ -13,12 +11,25 @@ from rest_framework.response import Response
 from api.filters import IngredientFilter, RecipeFilter
 from api.mixins import ListRetrieveModelMixin
 from api.permissions import IsAuthenticated, IsAuthorOrReadOnly
-from api.serializers import (CustomUserSerializer, FavoriteSerializer,
-                             IngredientSerializer, RecipeReadSerializer,
-                             RecipeWriteSerializer, ShoppingCardSerializer,
-                             SubscriptionSerializer, TagSerializer)
-from recipes.models import (Favorite, Follow, Ingredient, Recipe,
-                            RecipeIngredient, ShoppingCard, Tag)
+from api.serializers import (
+    CustomUserSerializer,
+    FavoriteSerializer,
+    IngredientSerializer,
+    RecipeReadSerializer,
+    RecipeWriteSerializer,
+    ShoppingCardSerializer,
+    SubscriptionSerializer,
+    TagSerializer,
+)
+from recipes.models import (
+    Favorite,
+    Follow,
+    Ingredient,
+    Recipe,
+    RecipeIngredient,
+    ShoppingCard,
+    Tag,
+)
 
 User = get_user_model()
 
@@ -185,11 +196,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
             .values_list("ingredient__name", "ingredient__measurement_unit")
             .annotate(total_amount=Sum("amount"))
         )
-        output = io.StringIO()
-        output.write("Список покупок:\n")
+        output = ["Список покупок:\n"]
         for i, (name, unit, amount) in enumerate(ingredients, start=1):
-            output.write(f"{i}. {name} - {amount} {unit}\n")
+            output.append(f"{i}. {name} - {amount} {unit}\n")
         response = HttpResponse(content_type="text/plain")
         response["Content-Disposition"] = 'attachment; filename="recipes.txt"'
-        response.write(output.getvalue())
+        response.write("".join(output))
         return response
