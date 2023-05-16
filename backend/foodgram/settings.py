@@ -181,3 +181,12 @@ CORS_ALLOW_METHODS = [
 # region data upload
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240
 # endregion
+
+# region drf-spectacular
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Foodgram API",
+    "DESCRIPTION": "Foodgram API Documentation",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+}
+# endregion

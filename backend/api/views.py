@@ -3,7 +3,7 @@ from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from djoser.views import UserViewSet
+from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -34,7 +34,7 @@ from recipes.models import (
 User = get_user_model()
 
 
-class CustomUserViewSet(UserViewSet):
+class CustomUserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = CustomUserSerializer
     http_method_names = ["get", "post", "delete"]
@@ -47,6 +47,13 @@ class CustomUserViewSet(UserViewSet):
             request.user, context={"request": request}
         )
         return Response(serializer.data)
+
+    @action(
+        detail=False, methods=["POST"], permission_classes=[IsAuthenticated]
+    )
+    def set_password(self, request):
+        view = DjoserUserViewSet.as_view({"post": "set_password"})
+        return view(request._request)
 
     @action(
         detail=False, methods=(["GET"]), permission_classes=[IsAuthenticated]
