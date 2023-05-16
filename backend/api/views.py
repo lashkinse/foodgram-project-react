@@ -11,25 +11,12 @@ from rest_framework.response import Response
 from api.filters import IngredientFilter, RecipeFilter
 from api.mixins import ListRetrieveModelMixin
 from api.permissions import IsAuthenticated, IsAuthorOrReadOnly
-from api.serializers import (
-    CustomUserSerializer,
-    FavoriteSerializer,
-    IngredientSerializer,
-    RecipeReadSerializer,
-    RecipeWriteSerializer,
-    ShoppingCardSerializer,
-    SubscriptionSerializer,
-    TagSerializer,
-)
-from recipes.models import (
-    Favorite,
-    Follow,
-    Ingredient,
-    Recipe,
-    RecipeIngredient,
-    ShoppingCard,
-    Tag,
-)
+from api.serializers import (CustomUserSerializer, FavoriteSerializer,
+                             IngredientSerializer, RecipeReadSerializer,
+                             RecipeWriteSerializer, ShoppingCardSerializer,
+                             SubscriptionSerializer, TagSerializer)
+from recipes.models import (Favorite, Follow, Ingredient, Recipe,
+                            RecipeIngredient, ShoppingCard, Tag)
 
 User = get_user_model()
 
