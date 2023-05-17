@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.db import transaction
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 
@@ -210,7 +211,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             and Recipe.objects.filter(name=attrs.get("name")).exists()
         ):
             raise serializers.ValidationError(
-                {"name": "Название рецепта должно быть уникальным"}, code=400
+                {"name": "Название рецепта должно быть уникальным"}
             )
         if not attrs.get("cooking_time") > 0:
             raise serializers.ValidationError(
@@ -231,23 +232,24 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
                 )
         return attrs
 
+    @transaction.atomic
     def create(self, validated_data):
         tags = validated_data.pop("tags")
         ingredients = validated_data.pop("ingredients")
         recipe = Recipe.objects.create(**validated_data)
         recipe.tags.set(tags)
-        RecipeIngredient.objects.bulk_create(
-            [
-                RecipeIngredient(
-                    ingredient=ingredient.get("id"),
-                    recipe=recipe,
-                    amount=ingredient.get("amount"),
-                )
-                for ingredient in ingredients
-            ]
-        )
+        recipe_ingredients = [
+            RecipeIngredient(
+                ingredient=ingredient.get("id"),
+                recipe=recipe,
+                amount=ingredient.get("amount"),
+            )
+            for ingredient in ingredients
+        ]
+        RecipeIngredient.objects.bulk_create(recipe_ingredients)
         return recipe
 
+    @transaction.atomic
     def update(self, instance, validated_data):
         tags = validated_data.pop("tags")
         ingredients = validated_data.pop("ingredients")
@@ -255,16 +257,15 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         RecipeIngredient.objects.filter(recipe=instance).delete()
         for field, value in validated_data.items():
             setattr(instance, field, value)
-        RecipeIngredient.objects.bulk_create(
-            [
-                RecipeIngredient(
-                    ingredient=ingredient.get("id"),
-                    recipe=instance,
-                    amount=ingredient.get("amount"),
-                )
-                for ingredient in ingredients
-            ]
-        )
+        recipe_ingredients = [
+            RecipeIngredient(
+                ingredient=ingredient.get("id"),
+                recipe=instance,
+                amount=ingredient.get("amount"),
+            )
+            for ingredient in ingredients
+        ]
+        RecipeIngredient.objects.bulk_create(recipe_ingredients)
         instance.save()
         return instance
 

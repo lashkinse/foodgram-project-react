@@ -25,7 +25,6 @@ class User(AbstractUser):
     )
     first_name = models.CharField(verbose_name="Имя", max_length=150)
     last_name = models.CharField(verbose_name="Фамилия", max_length=150)
-    password = models.CharField(verbose_name="Пароль", max_length=150)
 
     class Meta:
         verbose_name = "Пользователь"
