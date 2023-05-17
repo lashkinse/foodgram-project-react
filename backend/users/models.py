@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from users.validators import validate_username_format, validate_password
+from users.validators import validate_username_format
 
 
 class User(AbstractUser):
@@ -23,9 +23,7 @@ class User(AbstractUser):
             "unique": "Пользователь с таким именем уже существует"
         },
     )
-    password = models.CharField(
-        verbose_name="Пароль", validators=[validate_password], max_length=150
-    )
+    password = models.CharField(verbose_name="Пароль", max_length=150)
     first_name = models.CharField(verbose_name="Имя", max_length=150)
     last_name = models.CharField(verbose_name="Фамилия", max_length=150)
 
