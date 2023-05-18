@@ -18,7 +18,7 @@ class RoleFilter(admin.SimpleListFilter):
         value = self.value()
         if value == "is_staff":
             return queryset.filter(is_staff=True)
-        elif value == "is_superuser":
+        if value == "is_superuser":
             return queryset.filter(is_superuser=True)
         return queryset
 
