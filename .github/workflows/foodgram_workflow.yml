@@ -64,7 +64,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd infra
-            sudo docker-compose down
+            sudo docker compose down
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend:latest
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:latest
             rm -r .env
@@ -75,7 +75,7 @@ jobs:
             echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
             echo DB_HOST=${{ secrets.DB_HOST }} >> .env
             echo DB_PORT=${{ secrets.DB_PORT }} >> .env
-            sudo docker-compose up -d
+            sudo docker compose up -d
 
   send_message:
     name: Django-app send notification to telegram
