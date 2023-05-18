@@ -1,8 +1,6 @@
 # Проект Foodgram (foodgram-project-react)
 
-<!---
-![Yamdb Workflow Status](https://github.com/lashkinse/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg?branch=master&event=push)
--->
+![Yamdb Workflow Status](https://github.com/lashkinse/foodgram-project-react/actions/workflows/main.yml/badge.svg?branch=master&event=push)
 
 «Продуктовый помощник», онлайн-сервис и API для него. На этом сервисе пользователи смогут публиковать
 рецепты, подписываться на публикации других пользователей, добавлять понравившиеся рецепты в список «Избранное», а перед
