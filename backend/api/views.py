@@ -74,6 +74,7 @@ class CustomUserViewSet(viewsets.ModelViewSet):
             return Response(
                 data=serializer.data, status=status.HTTP_201_CREATED
             )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @subscribe.mapping.delete
     def unsubscribe(self, request, **kwargs):
@@ -141,6 +142,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return Response(
                 data=serializer.data, status=status.HTTP_201_CREATED
             )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @add_to_shopping_cart.mapping.delete
     def remove_from_shopping_cart(self, request, **kwargs):
@@ -172,6 +174,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return Response(
                 data=serializer.data, status=status.HTTP_201_CREATED
             )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @add_to_favorite.mapping.delete
     def remove_from_favorite(self, request, **kwargs):

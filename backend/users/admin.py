@@ -20,8 +20,7 @@ class RoleFilter(admin.SimpleListFilter):
             return queryset.filter(is_staff=True)
         elif value == "is_superuser":
             return queryset.filter(is_superuser=True)
-        else:
-            return queryset
+        return queryset
 
 
 @admin.register(User)
