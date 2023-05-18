@@ -161,6 +161,7 @@ http://<server_ip_address>/api/docs/swagger.html
 ```
 
 # Тестирование проекта;
+
 Админка http://84.201.128.134/admin
 
 ```
@@ -169,6 +170,7 @@ admin
 ```
 
 Вход под обычным пользователем http://84.201.128.134/
+
 ```
 test@yandex.ru 
 7yA8xNLb
