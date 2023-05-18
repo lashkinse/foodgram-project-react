@@ -11,10 +11,11 @@ from rest_framework.response import Response
 from api.filters import IngredientFilter, RecipeFilter
 from api.mixins import ListRetrieveModelMixin
 from api.permissions import IsAuthenticated, IsAuthorOrReadOnly
-from api.serializers import (CustomUserSerializer, FavoriteSerializer,
-                             IngredientSerializer, RecipeReadSerializer,
-                             RecipeWriteSerializer, ShoppingCardSerializer,
-                             SubscriptionSerializer, TagSerializer)
+from api.serializers import (CustomUserCreateSerializer, CustomUserSerializer,
+                             FavoriteSerializer, IngredientSerializer,
+                             RecipeReadSerializer, RecipeWriteSerializer,
+                             ShoppingCardSerializer, SubscriptionSerializer,
+                             TagSerializer)
 from recipes.models import (Favorite, Follow, Ingredient, Recipe,
                             RecipeIngredient, ShoppingCard, Tag)
 
@@ -41,6 +42,13 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     def set_password(self, request):
         view = DjoserUserViewSet.as_view({"post": "set_password"})
         return view(request._request)
+
+    def create(self, request, *args, **kwargs):
+        serializer = CustomUserCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(
         detail=False, methods=(["GET"]), permission_classes=[IsAuthenticated]
