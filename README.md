@@ -160,18 +160,26 @@ http://<server_ip_address>/api/docs/
 http://<server_ip_address>/api/docs/swagger.html
 ```
 
-# Тестирование проекта;
+# Тестирование проекта
 
 Админка http://84.201.128.134/admin
 
 ```
 admin
+admin@yandex.ru
 7yA8xNLb
 ```
 
 Вход под обычным пользователем http://84.201.128.134/
 
 ```
-test@yandex.ru 
+test@yandex.ru
 7yA8xNLb
 ```
+
+<!-- 
+sudo docker compose exec backend python manage.py migrate
+sudo docker compose exec backend python manage.py load_ingredients
+sudo docker compose exec backend python manage.py collectstatic --no-input
+sudo docker compose exec backend python manage.py createsuperuser
+-->
