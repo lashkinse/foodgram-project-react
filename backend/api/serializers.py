@@ -99,11 +99,11 @@ class SubscriptionSerializer(serializers.ModelSerializer):
         author = self.context.get("author")
         if author == user:
             raise serializers.ValidationError(
-                {"error": "Нельзя подписаться на себя"}, code=400
+                {"error": "Нельзя подписаться на себя"}
             )
         if Follow.objects.filter(user=user, author=author).exists():
             raise serializers.ValidationError(
-                {"error": "Вы уже подписаны на этого автора"}, code=400
+                {"error": "Вы уже подписаны на этого автора"}
             )
         return attrs
 
@@ -290,7 +290,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
         recipe = self.context["recipe"]
         if Favorite.objects.filter(user=user, recipe=recipe).exists():
             raise serializers.ValidationError(
-                {"error": "Рецепт уже находится в избранном"}, code=400
+                {"error": "Рецепт уже находится в избранном"}
             )
         return attrs
 
@@ -310,6 +310,6 @@ class ShoppingCardSerializer(serializers.ModelSerializer):
         recipe = self.context["recipe"]
         if ShoppingCard.objects.filter(user=user, recipe=recipe).exists():
             raise serializers.ValidationError(
-                {"error": "Рецепт уже находится в списке покупок"}, code=400
+                {"error": "Рецепт уже находится в списке покупок"}
             )
         return attrs
