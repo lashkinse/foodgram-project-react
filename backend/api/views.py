@@ -66,14 +66,15 @@ class CustomUserViewSet(viewsets.ModelViewSet):
         detail=True, methods=["POST"], permission_classes=[IsAuthenticated]
     )
     def subscribe(self, request, **kwargs):
-        user = get_object_or_404(User, pk=kwargs.get("id"))
-        context = {"request": self.request, "user": user}
-        serializer = SubscriptionSerializer(data=request.data, context=context)
+        user = request.user
+        author = get_object_or_404(User, pk=kwargs.get("id"))
+        context = {"request": self.request, "user": user, "author": author}
+        serializer = SubscriptionSerializer(
+            author, data=request.data, context=context
+        )
         if serializer.is_valid(raise_exception=True):
-            serializer.save(user=request.user, author=user)
-            return Response(
-                data=serializer.data, status=status.HTTP_201_CREATED
-            )
+            serializer.save(user=user, author=author)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @subscribe.mapping.delete
